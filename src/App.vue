@@ -3,19 +3,23 @@
     
     <AppHeader />
 
+    <AppMain />
+
   </div>
 </template>
 
 <script>
 
 import AppHeader from "./components/appHeader.vue";
+import AppMain from "./components/appMain.vue";
 
 
 
 export default {
   name: 'App',
   components: {
-    AppHeader
+    AppHeader,
+    AppMain
 }
 }
 </script>
