@@ -3,26 +3,21 @@
     <main>
 
         <div class="input-box">
-            <input type="text" placeholder="Add a new todo" />
-            <button>+</button>
+            <input type="text" placeholder="Add a new todo" v-model="todoInput" @keydown.enter="addTodo" />
+            <button @click="addTodo">+</button>
         </div>
 
         <div class="todo-list">
 
             <ul>
 
-                <li>
-                    Lorem ipsum dolor sit amet consectetur.
+                 <li v-for="(todo,index) in todos" :key="index" :class="{completed : todo.completed}">
+
+                    {{todo.text}}
+
                     <span class="actions">
-                        <button><svg version="1.1" fill="#41B883" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><polygon points="437.3,30 202.7,339.3 64,200.7 0,264.7 213.3,478 512,94 "/></svg></button>
-                        <button><svg version="1.1" fill="#ff3c3c" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1792 1792" style="enable-background:new 0 0 1792 1792;" xml:space="preserve"><path d="M1082.2,896.6l410.2-410c51.5-51.5,51.5-134.6,0-186.1s-134.6-51.5-186.1,0l-410.2,410L486,300.4c-51.5-51.5-134.6-51.5-186.1,0s-51.5,134.6,0,186.1l410.2,410l-410.2,410c-51.5,51.5-51.5,134.6,0,186.1c51.6,51.5,135,51.5,186.1,0l410.2-410l410.2,410c51.5,51.5,134.6,51.5,186.1,0c51.1-51.5,51.1-134.6-0.5-186.2L1082.2,896.6z"/></svg></button>
-                    </span>
-                </li>
-                <li>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam, voluptatem?
-                    <span class="actions">
-                        <button><svg version="1.1" fill="#41B883" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><polygon points="437.3,30 202.7,339.3 64,200.7 0,264.7 213.3,478 512,94 "/></svg></button>
-                        <button><svg version="1.1" fill="#ff3c3c" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1792 1792" style="enable-background:new 0 0 1792 1792;" xml:space="preserve"><path d="M1082.2,896.6l410.2-410c51.5-51.5,51.5-134.6,0-186.1s-134.6-51.5-186.1,0l-410.2,410L486,300.4c-51.5-51.5-134.6-51.5-186.1,0s-51.5,134.6,0,186.1l410.2,410l-410.2,410c-51.5,51.5-51.5,134.6,0,186.1c51.6,51.5,135,51.5,186.1,0l410.2-410l410.2,410c51.5,51.5,134.6,51.5,186.1,0c51.1-51.5,51.1-134.6-0.5-186.2L1082.2,896.6z"/></svg></button>
+                        <button @click="markTodo(todo.id)" ><svg version="1.1" fill="#41B883" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><polygon points="437.3,30 202.7,339.3 64,200.7 0,264.7 213.3,478 512,94 "/></svg></button>
+                        <button @click="removeTodo(todo.id)"><svg version="1.1" fill="#ff3c3c" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1792 1792" style="enable-background:new 0 0 1792 1792;" xml:space="preserve"><path d="M1082.2,896.6l410.2-410c51.5-51.5,51.5-134.6,0-186.1s-134.6-51.5-186.1,0l-410.2,410L486,300.4c-51.5-51.5-134.6-51.5-186.1,0s-51.5,134.6,0,186.1l410.2,410l-410.2,410c-51.5,51.5-51.5,134.6,0,186.1c51.6,51.5,135,51.5,186.1,0l410.2-410l410.2,410c51.5,51.5,134.6,51.5,186.1,0c51.1-51.5,51.1-134.6-0.5-186.2L1082.2,896.6z"/></svg></button>
                     </span>
                 </li>
 
@@ -34,7 +29,42 @@
 
 </template>
 
-<script></script>
+<script>
+
+export default {
+
+    data: function(){
+        return {
+            todoInput: "",
+            todos: []
+        }
+    },
+    methods: {
+        addTodo(){
+
+            if(!this.todoInput.length > 0) return;
+            this.todos = [...this.todos, {id: Math.random() * 1, text: this.todoInput, completed: false }];
+            this.todoInput = "";
+        },
+        removeTodo(index){
+            this.todos = this.todos.filter(item => item.id !== index);
+        },
+        markTodo(index){
+            
+            this.todos = this.todos.map(todo => {
+                if(todo.id === index){
+                    todo.completed = !todo.completed
+                }
+                return todo;
+            });
+            
+        }
+    }
+
+
+}
+
+</script>
 
 <style>
 
@@ -128,6 +158,12 @@ main .todo-list ul li .actions button{
 
 main .todo-list ul li .actions button svg{
     width: 20px;
+}
+
+
+main .todo-list ul li.completed{
+    text-decoration: line-through;
+    background: rgba(255, 255, 255, 0.726);
 }
 
 
